@@ -30,7 +30,7 @@ std::vector<int> readFile(const std::string& filename){
         if (iss >> speed >> brightness) sightingSignature.push_back(speed*brightness/10);
     }
     if (!sightingSignature.empty()){
-        std::sort(sightingSignature.begin(),sightingSignature.back(), [] (int a, int b){return a < b;});
+        std::sort(sightingSignature.begin(),sightingSignature.end(), [] (int a, int b){return a < b;});
     }
     return sightingSignature;
 }
