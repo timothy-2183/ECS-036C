@@ -6,30 +6,33 @@
 #include <chrono>
 #include <string>
 #include <sstream>
-
-// Defining a data structure used to store pairs of values, hence using tuples containing <speed, brightness, signature>
-class sighting{
-    public:
-    int speed;
-    int brightness;
-    int signature;
-    sighting(int a, int b){
-        speed = a;
-        brightness = b;
-        signature = a*b/10;
-    }
-    
-};
+#include <memory>
 
 /*
 Name        : readFile
 Description : Creates a vector of sightings which gets filled with the information of the File
 Receives    : Filename (string, by reference)
-Returns     : Shared Pointer to the vector containing <sighting> objects.
+Returns     : Shared Pointer to the vector containing int of the btightness of the objects .
 */
-std::vector<sighting>* readFile(const std::string& filename){
-    (void) filename;
-    return nullptr;
+std::vector<int> readFile(const std::string& filename){
+    std::vector<int> sightingSignature={};
+    std::ifstream myFile(filename);
+    if (!myFile.is_open())
+    {
+        std::cerr << "File Failed to Open" << std::endl;
+        return sightingSignature;
+    }
+    std::string line;
+    while (std::getline(myFile,line))
+    {
+        std::istringstream iss (line);
+        int speed, brightness;
+        if (iss >> speed >> brightness) sightingSignature.push_back(speed*brightness/10);
+    }
+    if (!sightingSignature.empty()){
+        std::sort(sightingSignature.begin(),sightingSignature.back(), [] (int a, int b){return a < b;});
+    }
+    return sightingSignature;
 }
 
 /*
