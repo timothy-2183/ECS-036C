@@ -96,7 +96,7 @@ int binSearch(const std::vector<int>& sightings,const std::vector<int>& signatur
     return count;
 }
 int binrec (int front, int back, int search, const std::vector<int>& signatures){
-    if (front => back)
+    if (front>=back)
     {
         return 0;
     }
