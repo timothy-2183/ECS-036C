@@ -95,8 +95,14 @@ int binSearch(const std::vector<int>& sightings,const std::vector<int>& signatur
     }
     return count;
 }
+/*
+Name        : binrec
+Description : Looks at the middle of the sorted array, looks left to find the number if it's bigger, looks right otherwise. 
+Receives    : start of the search, end of the search, the search term, and the signature array.
+Returns     : Amount of sightings that are the same as the signatures.
+*/
 int binrec (int front, int back, int search, const std::vector<int>& signatures){
-    if (front>=back)
+    if (front>back)
     {
         return 0;
     }
