@@ -44,7 +44,7 @@ std::vector<int> readFileSignatures(const std::string& filename){
     std::ifstream myFile(filename);
     if (!myFile.is_open())
     {
-        std::cerr << "File Failed to Open" << std::endl;
+        std::cerr << "Error: cannot open file wrong_sig_file.dat" << std::endl;
         return Signature;
     }
     int num;
@@ -133,7 +133,7 @@ int main( int argc, char *argv[]){
     std::cin >> searchTerm;
     while (!(searchTerm=='l'||searchTerm=='b'))
     {
-        std::cerr << "Incorrect choice";
+        std::cout << "Incorrect choice";
         std::cin >>searchTerm;
     }
     //Starting clock to Measure the Search speed
@@ -149,7 +149,7 @@ int main( int argc, char *argv[]){
     //Ending clock and counting the duration.
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << "CPU time: " << duration << " microseconds" << std::endl;
+    std::cerr << "CPU time: " << duration << " microseconds" << std::endl;
 
     //Writing the output, taken from https://en.cppreference.com/w/cpp/io/basic_ofstream
     std::ofstream resStream (resultFile, std::ios::binary);
