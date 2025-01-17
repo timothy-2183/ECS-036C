@@ -82,20 +82,6 @@ int linearsearch(const std::vector<int>& sightings, const std::vector<int>& sign
 }
 
 /*
-Name        : binSearch
-Description : looks for the items that has the same signature by calling the recursive Binary Search.
-Receives    : vector of sightings, vector of the signature
-Returns     : Amount of sightings that are the same as the signatures.
-*/
-int binSearch(const std::vector<int>& sightings,const std::vector<int>& signatures){
-    int count = 0;
-    for (size_t i = 0; i < sightings.size(); i++)
-    {
-        count +=binrec(0, signatures.size()-1, sightings[i], signatures);
-    }
-    return count;
-}
-/*
 Name        : binrec
 Description : Looks at the middle of the sorted array, looks left to find the number if it's bigger, looks right otherwise. 
 Receives    : start of the search, end of the search, the search term, and the signature array.
@@ -110,6 +96,21 @@ int binrec (int front, int back, int search, const std::vector<int>& signatures)
     if (signatures[curr]==search) {return 1;}
     else if (signatures[curr]>search){ return binrec (front, curr-1, search, signatures);}
     else{ return binrec (curr+1, back, search, signatures);}
+}
+
+/*
+Name        : binSearch
+Description : looks for the items that has the same signature by calling the recursive Binary Search.
+Receives    : vector of sightings, vector of the signature
+Returns     : Amount of sightings that are the same as the signatures.
+*/
+int binSearch(const std::vector<int>& sightings,const std::vector<int>& signatures){
+    int count = 0;
+    for (size_t i = 0; i < sightings.size(); i++)
+    {
+        count = count + binrec(0, signatures.size()-1, sightings[i], signatures);
+    }
+    return count;
 }
 
 /*
