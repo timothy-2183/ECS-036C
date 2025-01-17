@@ -22,8 +22,8 @@ std::vector<int> readFileSightings(const std::string& filename){
         std::cerr << "File Failed to Open" << std::endl;
         return sightingSignature;
     }
-    int brightness, speed;
-    while (myFile >> brightness >> speed) {
+    int speed, brightness;
+    while (myFile >> speed >> brightness) {
         sightingSignature.push_back(brightness*speed/10);
     }
     if (!sightingSignature.empty()){
@@ -52,7 +52,7 @@ std::vector<int> readFileSignatures(const std::string& filename){
         Signature.push_back(num);
     }
     if (!Signature.empty()){
-        std::sort(Signature.begin(),Signature.end(), [] (int a, int b){return a < b;});
+        std::sort(Signature.begin(),Signature.end());
     }
     myFile.close();
     return Signature;
@@ -111,6 +111,48 @@ int binrec (int front, int back, int search, const std::vector<int>& signatures)
     else if (signatures[curr]>search){ return binrec (front, curr-1, search, signatures);}
     else{ return binrec (curr+1, back, search, signatures);}
 }
-int main(){
+
+/*
+Name        : writeFile
+Description : Writes the desired content in the file.
+Receives    : start of the search, end of the search, the search term, and the signature array.
+Returns     : Amount of sightings that are the same as the signatures.
+*/
+
+int main( int argc, char *argv[]){
+    std::string sightingFile = argv[1];
+    std::string signatureFile = argv[2];
+    std::string resultFile = argv[3];
+
+    auto sightings = readFileSightings(sightingFile);
+    auto signature = readFileSignatures(signatureFile);
+
+    char searchTerm;
+    std::cout << "Choice of search method ([l]inear, [b]inary)?";
+    std::cin >> searchTerm;
+    while (!(searchTerm=='l'||searchTerm=='b'))
+    {
+        std::cerr << "Incorrect choice";
+        std::cin >>searchTerm;
+    }
+    //Starting clock to Measure the Search speed
+    auto start = std::chrono::high_resolution_clock::now();
+    int match =0;
+    if (searchTerm=='l')
+    {
+        match = binSearch(sightings,signature);
+    }
+    else{
+        match = linearsearch(sightings,signature);
+    }
+    //Ending clock and counting the duration.
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "CPU time: " << duration << " microseconds" << std::endl;
+
+    //Writing the output, taken from https://en.cppreference.com/w/cpp/io/basic_ofstream
+    std::ofstream resStream (resultFile, std::ios::binary);
+    resStream << match << " ";
+    resStream.close();
     return 0;
 }
