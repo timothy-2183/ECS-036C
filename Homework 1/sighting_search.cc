@@ -9,6 +9,49 @@
 #include <memory>
 #include <unordered_set>
 
+/*
+Name        : binrec
+Description : Looks at the middle of the sorted array, looks left to find the number if it's bigger, looks right otherwise.
+Receives    : start of the search, end of the search, the search term, and the signature array.
+Returns     : Amount of sightings that are the same as the signatures.
+*/
+int binrec(int front, int back, int search, const std::vector<int> &signatures)
+{
+    while (front <= back)
+    {
+        int mid = front + (back - front) / 2;
+
+        if (signatures[mid] == search)
+        {
+            return 1;
+        }
+        else if (signatures[mid] < search)
+        {
+            front = mid + 1;
+        }
+        else
+        {
+            back = mid - 1;
+        }
+    }
+    return 0;
+}
+
+/*
+Name        : binSearch
+Description : looks for the items that has the same signature by calling the recursive Binary Search.
+Receives    : vector of sightings, vector of the signature
+Returns     : Amount of sightings that are the same as the signatures.
+*/
+int binSearch(const std::vector<int> &sightings, const std::vector<int> &signatures)
+{
+    int count = 0;
+    for (size_t i = 0; i < sightings.size(); i++)
+    {
+        count = count + binrec(0, signatures.size() - 1, sightings[i], signatures);
+    }
+    return count;
+}
 
 /*
 Name        : readFileSightings
@@ -28,7 +71,10 @@ std::vector<int> readFileSightings(const std::string &filename)
     int speed, brightness;
     while (myFile >> speed >> brightness)
     {
-        sightingSignature.push_back(brightness * speed / 10);
+        if (linearsearch(speed * brightness / 10, sightingSignature) == 0)
+        {
+            sightingSignature.push_back(speed * brightness / 10);
+        }
     }
     if (!sightingSignature.empty())
     {
@@ -57,6 +103,11 @@ std::vector<int> readFileSignatures(const std::string &filename)
     int num;
     while (myFile >> num)
     {
+        if (linearsearch(num, Signature)==0)
+        {
+            Signature.push_back(num);
+        }
+
         Signature.push_back(num);
     }
     if (!Signature.empty())
@@ -83,70 +134,29 @@ int linearsearch(const std::vector<int> &sightings, const std::vector<int> &sign
         {
             if (sightings[i] == signature[j])
             {
-                ++count;
+                return 1;
             }
-        }
-    }
-    return count;
-}
-
-/*
-Name        : binrec
-Description : Looks at the middle of the sorted array, looks left to find the number if it's bigger, looks right otherwise.
-Receives    : start of the search, end of the search, the search term, and the signature array.
-Returns     : Amount of sightings that are the same as the signatures.
-*/
-int binrec(int front, int back, int search, const std::vector<int> &signatures)
-{
-    while (front <= back) {
-        int mid = front + (back - front) / 2;
-
-        if (signatures[mid] == search ) {
-            return 1;
-        } else if (signatures[mid] < search) {
-            front = mid + 1;
-        } else {
-            back = mid - 1;
         }
     }
     return 0;
 }
-
 /*
-Name        : binSearch
-Description : looks for the items that has the same signature by calling the recursive Binary Search.
-Receives    : vector of sightings, vector of the signature
-Returns     : Amount of sightings that are the same as the signatures.
+Name        : linearSearch (int)
+Description : looks for the items that has the same signature in a linear manner
+Receives    : int being searched, vector to be searched from
+Returns     : 1 or 0 depending on whether the value is found or not.
 */
-int binSearch(const std::vector<int> &sightings, const std::vector<int> &signatures)
-{
-    int count = 0;
-    for (size_t i = 0; i < sightings.size(); i++)
-    {
-        count = count + binrec(0, signatures.size() - 1, sightings[i], signatures);
-    }
-    return count;
-}
 
-std::vector<int> removeDuplicates(std::vector<int> myVect){
-    std::unordered_set<int> mySet;
-    for (auto i : myVect)
+int linearsearch(int search, const std::vector<int> &searching)
+{
+    for (size_t j = 0; j < searching.size(); j++)
     {
-        if (mySet.find(i)==mySet.end())
+        if (search == searching[j])
         {
-            mySet.insert(i);
+            return 1;
         }
     }
-    int count = 0;
-    std::vector<int> returnVector = {};
-    for (auto j : mySet)
-    {
-        returnVector[count]=j;
-        count++;
-    }
-    
-    return returnVector;
-    
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -161,8 +171,8 @@ int main(int argc, char *argv[])
     std::string signatureFile = argv[2];
     std::string resultFile = argv[3];
 
-    auto sightings = removeDuplicates(readFileSightings(sightingFile));
-    auto signature = removeDuplicates(readFileSignatures(signatureFile));
+    auto sightings = readFileSightings(sightingFile);
+    auto signature = readFileSignatures(signatureFile);
 
     char searchTerm;
     std::cout << "Choice of search method ([l]inear, [b]inary)?";
