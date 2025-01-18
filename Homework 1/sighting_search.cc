@@ -18,32 +18,14 @@ Returns     : Amount of sightings that are the same as the signatures.
 
 int linearsearch(const std::vector<int> &sightings, const std::vector<int> &signature)
 {
-    for (size_t i = 0; i < sightings.size(); i++)
+    for (auto i : sightings)
     {
-        for (size_t j = 0; j < signature.size(); j++)
+        for (auto j : signature)
         {
-            if (sightings[i] == signature[j])
+            if (i == j)
             {
                 return 1;
-            }
-        }
-    }
-    return 0;
-}
-/*
-Name        : linearSearch (int)
-Description : looks for the items that has the same signature in a linear manner
-Receives    : int being searched, vector to be searched from
-Returns     : 1 or 0 depending on whether the value is found or not.
-*/
-
-int linearsearch(int search, const std::vector<int> &searching)
-{
-    for (size_t j = 0; j < searching.size(); j++)
-    {
-        if (search == searching[j])
-        {
-            return 1;
+            }   
         }
     }
     return 0;
@@ -86,9 +68,9 @@ Returns     : Amount of sightings that are the same as the signatures.
 int binSearch(const std::vector<int> &sightings, const std::vector<int> &signatures)
 {
     int count = 0;
-    for (size_t i = 0; i < sightings.size(); i++)
+    for (auto i : signatures)
     {
-        count = count + binrec(0, signatures.size() - 1, sightings[i], signatures);
+        count = count + binrec(0, sightings.size() - 1, i, sightings);
     }
     return count;
 }
@@ -111,7 +93,7 @@ std::vector<int> readFileSightings(const std::string &filename)
     int speed, brightness;
     while (myFile >> speed >> brightness)
     {
-        sightingSignature.push_back(speed * brightness / 10);
+        sightingSignature.push_back(std::ceil(speed * brightness / 10));
     }
     if (!sightingSignature.empty())
     {
