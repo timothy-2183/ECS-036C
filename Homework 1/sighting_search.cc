@@ -7,7 +7,22 @@
 #include <string>
 #include <sstream>
 #include <memory>
-#include <unordered_set>
+
+class Time{
+    private:
+    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point end;
+    public:
+    double elapsed_us;
+    void Reset(){
+        start = std::chrono::high_resolution_clock::now();
+    }
+    double CurrentTime(){
+        end = std::chrono::high_resolution_clock::now();
+        elapsed_us = std::chrono::duration<double, std::micro> (end - start).count();
+        return elapsed_us;
+    }
+};
 
 /*
 Name        : linearSearch
@@ -18,19 +33,32 @@ Returns     : Amount of sightings that are the same as the signatures.
 
 int linearsearch(const std::vector<int> &sightings, const std::vector<int> &signature)
 {
+    int count = 0;
     for (auto i : sightings)
     {
         for (auto j : signature)
         {
             if (i == j)
             {
-                return 1;
+                count++;
             }   
         }
     }
-    return 0;
+    return count;
 }
 
+int linearsearch(int search , const std::vector<int> &myVec)
+{
+    for (auto i : myVec)
+    {
+        if (i == search)
+        {
+            return 1;
+        }
+        
+    }
+    return 0;
+}
 /*
 Name        : binrec
 Description : Looks at the middle of the sorted array, looks left to find the number if it's bigger, looks right otherwise.
@@ -70,7 +98,7 @@ int binSearch(const std::vector<int> &sightings, const std::vector<int> &signatu
     int count = 0;
     for (auto i : signatures)
     {
-        count = count + binrec(0, sightings.size() - 1, i, sightings);
+        count = count + binrec(0, sightings.size() - 1, i,sightings);
     }
     return count;
 }
@@ -93,12 +121,10 @@ std::vector<int> readFileSightings(const std::string &filename)
     int speed, brightness;
     while (myFile >> speed >> brightness)
     {
-        sightingSignature.push_back(std::ceil(speed * brightness / 10));
-    }
-    if (!sightingSignature.empty())
-    {
-        std::sort(sightingSignature.begin(), sightingSignature.end(), [](int a, int b)
-                  { return a < b; });
+        if (linearsearch(std::ceil(speed * brightness / 10),sightingSignature)==0)
+        {
+            sightingSignature.push_back(std::ceil(speed * brightness / 10));
+        }
     }
     myFile.close();
     return sightingSignature;
@@ -112,7 +138,7 @@ Returns     : Vector containing int of the signatures of the known aircrafts. .
 */
 std::vector<int> readFileSignatures(const std::string &filename)
 {
-    std::vector<int> Signature = {};
+    std::vector<int> Signature;
     std::ifstream myFile(filename);
     if (!myFile.is_open())
     {
@@ -137,9 +163,9 @@ int main(int argc, char *argv[])
     if (!(argv[1] && argv[2] && argv[3]))
     {
         std::cerr << "Usage: /autograder/source/tests/sighting_search <sighting_file.dat> <signature_file.dat> <result_file.dat>";
-        return 1;
+        return -1;
     }
-
+    Time clock;
     std::string sightingFile = argv[1];
     std::string signatureFile = argv[2];
     std::string resultFile = argv[3];
@@ -150,37 +176,38 @@ int main(int argc, char *argv[])
     char searchTerm;
     std::cout << "Choice of search method ([l]inear, [b]inary)?";
     std::cin >> searchTerm;
-    while (!(searchTerm == 'l' || searchTerm == 'b'))
+    while (!( searchTerm=='l'|| searchTerm=='b'))
     {
         std::cerr << "Incorrect choice";
         std::cin >> searchTerm;
     }
+    
     // Starting clock to Measure the Search speed
-    auto start = std::chrono::high_resolution_clock::now();
     int match = 0;
-    if (searchTerm == 'l')
+    if (searchTerm =='l')
     {
-        match = binSearch(sightings, signature);
+        clock.Reset();
+        match = linearsearch(sightings, signature);
     }
     else
     {
-        match = linearsearch(sightings, signature);
+        clock.Reset();
+        match = binSearch(sightings, signature);
     }
     // Ending clock and counting the duration.
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "CPU time: " << clock.CurrentTime() << " microseconds" << std::endl;
 
     // Writing the output, taken from https://en.cppreference.com/w/cpp/io/basic_ofstream
     std::ofstream resStream(resultFile);
     if (!resStream.is_open())
     {
         std::cerr << "Error: cannot open file " << resultFile << std::endl;
+        return -1;
     }
     else
     {
         resStream << match << " ";
         resStream.close();
     }
-    std::cout << "CPU time: " << duration << " microseconds" << std::endl;
     return 0;
 }
