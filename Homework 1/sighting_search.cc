@@ -121,9 +121,9 @@ std::vector<int> readFileSightings(const std::string &filename)
     int speed, brightness;
     while (myFile >> speed >> brightness)
     {
-        if (linearsearch(std::ceil(speed * brightness / 10),sightingSignature)==0)
+        if (linearsearch(std::ceil(static_cast<double>(speed * brightness / 10)),sightingSignature)==0)
         {
-            sightingSignature.push_back(std::ceil(speed * brightness / 10));
+            sightingSignature.push_back(std::ceil(static_cast<double>(speed * brightness / 10)));
         }
     }
     myFile.close();
