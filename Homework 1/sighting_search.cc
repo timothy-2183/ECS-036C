@@ -18,7 +18,6 @@ Returns     : Amount of sightings that are the same as the signatures.
 
 int linearsearch(const std::vector<int> &sightings, const std::vector<int> &signature)
 {
-    int count = 0;
     for (size_t i = 0; i < sightings.size(); i++)
     {
         for (size_t j = 0; j < signature.size(); j++)
