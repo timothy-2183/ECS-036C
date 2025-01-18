@@ -10,7 +10,7 @@
 
 class Time{
     private:
-    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point start;
     std::chrono::high_resolution_clock::time_point end;
     public:
     double elapsed_us;
@@ -121,9 +121,9 @@ std::vector<int> readFileSightings(const std::string &filename)
     int speed, brightness;
     while (myFile >> speed >> brightness)
     {
-        if (linearsearch(std::ceil(static_cast<double>(speed * brightness / 10)),sightingSignature)==0)
+        if (linearsearch(std::ceil(static_cast<double>(static_cast<double>(speed) * static_cast<double>(brightness) / 10)),sightingSignature)==0)
         {
-            sightingSignature.push_back(std::ceil(static_cast<double>(speed * brightness / 10)));
+            sightingSignature.push_back(std::ceil(static_cast<double>(static_cast<double>(speed) * static_cast<double>(brightness) / 10)));
         }
     }
     myFile.close();
@@ -150,10 +150,6 @@ std::vector<int> readFileSignatures(const std::string &filename)
     {
         Signature.push_back(num);
     }
-    if (!Signature.empty())
-    {
-        std::sort(Signature.begin(), Signature.end());
-    }
     myFile.close();
     return Signature;
 }
@@ -162,7 +158,7 @@ int main(int argc, char *argv[])
 {
     if (!(argv[1] && argv[2] && argv[3]))
     {
-        std::cerr << "Usage: "<< argv[0]<<" <sighting_file.dat> <signature_file.dat> <result_file.dat>";
+        std::cerr << "Usage: "<< argv[0] <<" <sighting_file.dat> <signature_file.dat> <result_file.dat>";
         return -1;
     }
     Time clock;
@@ -172,7 +168,10 @@ int main(int argc, char *argv[])
 
     auto sightings = readFileSightings(sightingFile);
     auto signature = readFileSignatures(signatureFile);
-
+    if (sightings.empty() || signature.empty())
+    {
+        return -1;
+    }
     char searchTerm;
     std::cout << "Choice of search method ([l]inear, [b]inary)?";
     std::cin >> searchTerm;
@@ -192,11 +191,13 @@ int main(int argc, char *argv[])
     else
     {
         clock.Reset();
+        std::sort(sightings.begin(),sightings.end());
         match = binSearch(sightings, signature);
     }
     // Ending clock and counting the duration.
-    std::cout << "CPU time: " << clock.CurrentTime() << " microseconds" << std::endl;
-
+    std::cout << match << std::endl;
+    std::cout << "CPU time: " << clock.CurrentTime() << " microseconds"<< std::endl;
+    
     // Writing the output, taken from https://en.cppreference.com/w/cpp/io/basic_ofstream
     std::ofstream resStream(resultFile);
     if (!resStream.is_open())
