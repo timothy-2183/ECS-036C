@@ -10,6 +10,47 @@
 #include <unordered_set>
 
 /*
+Name        : linearSearch
+Description : looks for the items that has the same signature in a linear manner
+Receives    : vector of sightings, vector of the signature
+Returns     : Amount of sightings that are the same as the signatures.
+*/
+
+int linearsearch(const std::vector<int> &sightings, const std::vector<int> &signature)
+{
+    int count = 0;
+    for (size_t i = 0; i < sightings.size(); i++)
+    {
+        for (size_t j = 0; j < signature.size(); j++)
+        {
+            if (sightings[i] == signature[j])
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+/*
+Name        : linearSearch (int)
+Description : looks for the items that has the same signature in a linear manner
+Receives    : int being searched, vector to be searched from
+Returns     : 1 or 0 depending on whether the value is found or not.
+*/
+
+int linearsearch(int search, const std::vector<int> &searching)
+{
+    for (size_t j = 0; j < searching.size(); j++)
+    {
+        if (search == searching[j])
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/*
 Name        : binrec
 Description : Looks at the middle of the sorted array, looks left to find the number if it's bigger, looks right otherwise.
 Receives    : start of the search, end of the search, the search term, and the signature array.
@@ -116,47 +157,6 @@ std::vector<int> readFileSignatures(const std::string &filename)
     }
     myFile.close();
     return Signature;
-}
-
-/*
-Name        : linearSearch
-Description : looks for the items that has the same signature in a linear manner
-Receives    : vector of sightings, vector of the signature
-Returns     : Amount of sightings that are the same as the signatures.
-*/
-
-int linearsearch(const std::vector<int> &sightings, const std::vector<int> &signature)
-{
-    int count = 0;
-    for (size_t i = 0; i < sightings.size(); i++)
-    {
-        for (size_t j = 0; j < signature.size(); j++)
-        {
-            if (sightings[i] == signature[j])
-            {
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-/*
-Name        : linearSearch (int)
-Description : looks for the items that has the same signature in a linear manner
-Receives    : int being searched, vector to be searched from
-Returns     : 1 or 0 depending on whether the value is found or not.
-*/
-
-int linearsearch(int search, const std::vector<int> &searching)
-{
-    for (size_t j = 0; j < searching.size(); j++)
-    {
-        if (search == searching[j])
-        {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 int main(int argc, char *argv[])
