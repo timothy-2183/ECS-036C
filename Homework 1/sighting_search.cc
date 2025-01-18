@@ -130,7 +130,6 @@ int binSearch(const std::vector<int> &sightings, const std::vector<int> &signatu
 
 std::vector<int> removeDuplicates(std::vector<int> myVect){
     std::unordered_set<int> mySet;
-    int index = 0;
     for (auto i : myVect)
     {
         if (mySet.find(i)==mySet.end())
