@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 #include <memory>
+#include <unordered_set>
+
 
 /*
 Name        : readFileSightings
@@ -96,23 +98,18 @@ Returns     : Amount of sightings that are the same as the signatures.
 */
 int binrec(int front, int back, int search, const std::vector<int> &signatures)
 {
-    if (front > back)
-    {
-        return 0;
+    while (front <= back) {
+        int mid = front + (back - front) / 2;
+
+        if (signatures[mid] == search ) {
+            return 1;
+        } else if (signatures[mid] < search) {
+            front = mid + 1;
+        } else {
+            back = mid - 1;
+        }
     }
-    int curr = signatures[(front + back) / 2];
-    if (signatures[curr] == search)
-    {
-        return 1;
-    }
-    else if (signatures[curr] > search)
-    {
-        return binrec(front, curr - 1, search, signatures);
-    }
-    else
-    {
-        return binrec(curr + 1, back, search, signatures);
-    }
+    return 0;
 }
 
 /*
@@ -131,6 +128,28 @@ int binSearch(const std::vector<int> &sightings, const std::vector<int> &signatu
     return count;
 }
 
+std::vector<int> removeDuplicates(std::vector<int> myVect){
+    std::unordered_set<int> mySet;
+    int index = 0;
+    for (auto i : myVect)
+    {
+        if (mySet.find(i)==mySet.end())
+        {
+            mySet.insert(i);
+        }
+    }
+    int count = 0;
+    std::vector<int> returnVector = {};
+    for (auto j : mySet)
+    {
+        returnVector[count]=j;
+        count++;
+    }
+    
+    return returnVector;
+    
+}
+
 int main(int argc, char *argv[])
 {
     if (!(argv[1] && argv[2] && argv[3]))
@@ -143,8 +162,8 @@ int main(int argc, char *argv[])
     std::string signatureFile = argv[2];
     std::string resultFile = argv[3];
 
-    auto sightings = readFileSightings(sightingFile);
-    auto signature = readFileSignatures(signatureFile);
+    auto sightings = removeDuplicates(readFileSightings(sightingFile));
+    auto signature = removeDuplicates(readFileSignatures(signatureFile));
 
     char searchTerm;
     std::cout << "Choice of search method ([l]inear, [b]inary)?";
@@ -180,6 +199,6 @@ int main(int argc, char *argv[])
         resStream << match << " ";
         resStream.close();
     }
-    std::cerr << "CPU time: " << duration << " microseconds" << std::endl;
+    std::cout << "CPU time: " << duration << " microseconds" << std::endl;
     return 0;
 }
