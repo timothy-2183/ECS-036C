@@ -111,10 +111,7 @@ std::vector<int> readFileSightings(const std::string &filename)
     int speed, brightness;
     while (myFile >> speed >> brightness)
     {
-        if (linearsearch(speed * brightness / 10, sightingSignature) == 0)
-        {
-            sightingSignature.push_back(speed * brightness / 10);
-        }
+        sightingSignature.push_back(speed * brightness / 10);
     }
     if (!sightingSignature.empty())
     {
@@ -143,11 +140,6 @@ std::vector<int> readFileSignatures(const std::string &filename)
     int num;
     while (myFile >> num)
     {
-        if (linearsearch(num, Signature)==0)
-        {
-            Signature.push_back(num);
-        }
-
         Signature.push_back(num);
     }
     if (!Signature.empty())
