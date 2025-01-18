@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 {
     if (!(argv[1] && argv[2] && argv[3]))
     {
-        std::cerr << "Usage: /autograder/source/tests/sighting_search <sighting_file.dat> <signature_file.dat> <result_file.dat>";
+        std::cerr << "Usage: "<< argv[0]<<" <sighting_file.dat> <signature_file.dat> <result_file.dat>";
         return -1;
     }
     Time clock;
@@ -176,9 +176,9 @@ int main(int argc, char *argv[])
     char searchTerm;
     std::cout << "Choice of search method ([l]inear, [b]inary)?";
     std::cin >> searchTerm;
-    while (!( searchTerm=='l'|| searchTerm=='b'))
+    while (searchTerm != 'l' && searchTerm != 'b')
     {
-        std::cerr << "Incorrect choice";
+        std::cerr << "Incorrect choice" << std::endl;
         std::cin >> searchTerm;
     }
     
