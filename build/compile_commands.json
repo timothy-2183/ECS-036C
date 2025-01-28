@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/vscode/ECS-036C/build",
+  "command": "/usr/bin/g++ -I/home/vscode/ECS-036C/googletest/googlemock/include -I/home/vscode/ECS-036C/googletest/googlemock -isystem /home/vscode/ECS-036C/googletest/googletest/include -isystem /home/vscode/ECS-036C/googletest/googletest -g -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /home/vscode/ECS-036C/googletest/googlemock/src/gmock-all.cc",
+  "file": "/home/vscode/ECS-036C/googletest/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "/home/vscode/ECS-036C/build",
+  "command": "/usr/bin/g++ -isystem /home/vscode/ECS-036C/googletest/googlemock/include -isystem /home/vscode/ECS-036C/googletest/googlemock -isystem /home/vscode/ECS-036C/googletest/googletest/include -isystem /home/vscode/ECS-036C/googletest/googletest -g -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /home/vscode/ECS-036C/googletest/googlemock/src/gmock_main.cc",
+  "file": "/home/vscode/ECS-036C/googletest/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "/home/vscode/ECS-036C/build",
+  "command": "/usr/bin/g++ -I/home/vscode/ECS-036C/googletest/googletest/include -I/home/vscode/ECS-036C/googletest/googletest -g -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /home/vscode/ECS-036C/googletest/googletest/src/gtest-all.cc",
+  "file": "/home/vscode/ECS-036C/googletest/googletest/src/gtest-all.cc"
+},
+{
+  "directory": "/home/vscode/ECS-036C/build",
+  "command": "/usr/bin/g++ -isystem /home/vscode/ECS-036C/googletest/googletest/include -isystem /home/vscode/ECS-036C/googletest/googletest -g -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /home/vscode/ECS-036C/googletest/googletest/src/gtest_main.cc",
+  "file": "/home/vscode/ECS-036C/googletest/googletest/src/gtest_main.cc"
+}
+]
