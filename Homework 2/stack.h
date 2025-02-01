@@ -1,6 +1,7 @@
 #ifndef STACK_VECTOR_H_
 #define STACK_VECTOR_H_
 #include <vector>
+#include <iostream>
 template <typename T>
 class Stack
 {
