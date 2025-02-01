@@ -57,7 +57,7 @@ public:
         deq_array = new_arr;
         capacity = size;
         front = 0;
-        back = size - 1;
+        back = (size ==0 )? 0: size - 1;
     }
 
     //
@@ -99,6 +99,8 @@ public:
         deq_array = new T[8];
         size = 0;
         capacity = 8;
+        front = 0;
+        back =7;
     }
 
     // Push item @value at front of deque
@@ -131,6 +133,12 @@ public:
             throw std::underflow_error("Deque is empty!");
         front = (front + 1) % capacity;
         size--;
+        if (size==0)
+        {
+            front = 0;
+            back =7;
+        }
+        
     }
 
     // Remove item at back of deque
@@ -141,6 +149,11 @@ public:
             throw std::underflow_error("Deque is empty!");
         back = (back - 1 + capacity) % capacity;
         size--;
+        if (size==0)
+        {
+            front = 0;
+            back =7;
+        }
     }
 
 private:
@@ -176,7 +189,7 @@ private:
         back = size - 1;
     }
 };
-#endif DEQUE_H_
+#endif 
 //
 // Your implementation of the class should be located below
 //

@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/vscode/ECS-036C/**",
+                "/home/vscode/ECS-036C/googletest/googletest/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++-11",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compilerPathInCppPropertiesJson": "/usr/bin/clang",
+            "configurationProviderInCppPropertiesJson": "ms-vscode.cmake-tools",
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "/home/vscode/ECS-036C/**",
+                    "/home/vscode/ECS-036C/googletest/googletest/include",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/home/vscode/ECS-036C/googletest",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

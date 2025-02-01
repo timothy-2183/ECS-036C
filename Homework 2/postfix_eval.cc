@@ -16,21 +16,21 @@ Approach:
     - Takes the entire line, turns it into the string from the cin
     - basically takes in cin while there is cin, waits on response
     - each response seperated by an endl
-    - error means the program ends immedeately
+    - ending input stream means the program ends immedeately\
+    - also don't forget to print bye
 */ 
 int main()
 {
     std::string line;
     bool is_valid = true;
     while (std::getline(std::cin, line)){
-        if (line=="Bye!") break;
-        
         double result = EvaluatePostfix(line, is_valid);
         if (is_valid)
         {
             std::cout << result << std::endl;
         }
     }
+    std::cout << "Bye!"; 
     return 0;
 }
 
