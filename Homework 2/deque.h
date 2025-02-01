@@ -108,7 +108,7 @@ public:
     void PushFront(const T &value)
     {
         if (size == capacity)
-            AddCapacity(); // Resize if full
+            AddCapacity(); 
         front = (front - 1 + capacity) % capacity;
         deq_array[front] = value;
         size++;
@@ -119,7 +119,7 @@ public:
     void PushBack(const T &value)
     {
         if (size == capacity)
-            AddCapacity(); // Resize if full
+            AddCapacity(); 
         back = (back + 1) % capacity;
         deq_array[back] = value;
         size++;
