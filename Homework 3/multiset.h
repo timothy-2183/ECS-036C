@@ -132,6 +132,7 @@ public:
       throw std::runtime_error("Multiset is empty");
     return root->min();
   }
+  Multiset<K>() : root(nullptr) : size(0);
 
 private:
   //
@@ -154,6 +155,15 @@ template <typename K>
 class Node
 {
 public:
+  std::pair<K, size_t> find(const K &search)
+  {
+    if (search == key)
+      return std::pair<K, size_t>{key, count};
+    if (search > key)
+      return right->find(search);
+    if (search < key)
+      return left->find(search);
+  }
   std::unique_ptr<Node<K>> remove(const K &search)
   {
     if (search < key)
@@ -182,20 +192,11 @@ public:
       if (!right)
         return std::move(left);
 
-      key = right->min();
-      count = right->countOccurrences(key);
+      key = right->find(right->min).first;
+      count = right->find(right->min).second;
       right = right->remove(key);
     }
     return std::move(*this);
-  }
-  std::pair<K, size_t> find(const K &search)
-  {
-    if (search == key)
-      return std::pair<K, size_t>{key, count};
-    if (search > key)
-      return right->find(search);
-    if (search < key)
-      return left->find(search);
   }
   const K &max()
   {
