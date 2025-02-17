@@ -62,7 +62,7 @@ bool parse_int(const std::string& str, int& number) {
 // Main Function
 int main(int argc, char* argv[]) {
     if (argc < 3) {
-        std::cerr << "Usage: ./prime_factors <number> <command> [<args>]" << std::endl;
+        std::cerr << "Usage: " << argv[0] <<" <number> <command> [<args>]" << std::endl;
         return 1;
     }
 
@@ -79,12 +79,9 @@ int main(int argc, char* argv[]) {
         if (factors.Empty()) {
             std::cout << "No prime factors" << std::endl;
         } else {
-            bool first = true;
             for (int i = factors.Min(); i <= factors.Max(); i++) {
                 if (factors.Contains(i)) {
-                    if (!first) std::cout << ", ";
-                    std::cout << i << " (x" << factors.Count(i) << ")";
-                    first = false;
+                    std::cout << i << " (x" << factors.Count(i) << "),";
                 }
             }
             std::cout << std::endl;
