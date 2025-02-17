@@ -9,6 +9,163 @@
 #include <utility>
 
 template <typename K>
+class Multiset;
+
+template <typename K>
+class Node
+{
+public:
+  std::pair<K, size_t> find(const K &search)
+  {
+    if (search == key)
+      return std::pair<K, size_t>{key, count};
+    if (search > key && right)
+      return right->find(search);
+    if (search < key && left)
+      return left->find(search);
+    return std::pair<K,size_t>{NULL,NULL};
+  }
+  std::unique_ptr<Node<K>> remove(const K &search)
+  {
+    if (search < key)
+    {
+      if (left)
+      {
+        left = left->remove(search);
+      }
+    }
+    else if (search > key)
+    {
+      if (right)
+      {
+        right = right->remove(search);
+      }
+    }
+    else
+    {
+      if (count > 1)
+      {
+        count--;
+        return this;
+      }
+      if (!left)
+        return right;
+      if (!right)
+        return left;
+
+      key = right->find(right->min()).first;
+      count = right->find(right->min()).second;
+      right = right->remove(key);
+    }
+    return this;
+  }
+  const K &max()
+  {
+    if (this->right)
+    {
+      return right->max();
+    }
+    else
+    {
+      return key;
+    }
+  }
+  const K &min()
+  {
+    if (this->left)
+    {
+      return left->min();
+    }
+    else
+    {
+      return key;
+    }
+  }
+  void insert(const K &in)
+  {
+    if (key == in)
+    {
+      count++;
+      return;
+    }
+    if (key > in && left)
+    {
+      left->insert(in);
+    }
+    else if (key > in)
+    {
+      left = std::unique_ptr<Node>(new Node(in));
+      return;
+    }
+    if (key < in && right)
+    {
+      right->insert(in);
+    }
+    else if (key < in)
+    {
+      right = std::unique_ptr<Node>(new Node(in));
+      return;
+    }
+  }
+  const K &ceil(const K &search)
+  {
+    if (key > search)
+    {
+      if (right)
+      {
+        return min();
+      }
+      else
+      {
+        return key;
+      }
+    }
+    else
+    {
+      return right->ceil(search);
+    }
+  }
+  const K &floor(const K &search)
+  {
+    if (key < search)
+    {
+      if (left)
+      {
+        return min();
+      }
+      else
+      {
+        return key;
+      }
+    }
+    else
+    {
+      return right->ceil(search);
+    }
+  }
+
+  bool contains(const K &search)
+  {
+    if (key == search)
+      return true;
+    if (key > search && left)
+      return left->contains(search);
+    if (key < search && right)
+      return right->contains(search);
+    return false;
+  }
+
+  // constructor that immedeately adds the key to reduce the amount of insertion later on.
+  Node(const K &new_key) : key(new_key) , left(nullptr) , right(nullptr) , count(1){};
+
+private:
+  K key;
+  std::unique_ptr<Node<K>> left;
+  std::unique_ptr<Node<K>> right;
+  size_t count;
+};
+
+template <typename K>
 class Multiset
 {
 public:
@@ -18,10 +175,10 @@ public:
 
   // * Capacity
   // Returns number of items in multiset --O(1)
-  size_t Size() { return size; }
+  size_t Size() {return size;}
 
   // Returns true if multiset is empty --O(1)
-  bool Empty() { return (!root) }
+  bool Empty() {return !root;}
 
   // * Modifiers
   // Inserts an item corresponding to @key in multiset --O(log N) on average
@@ -54,7 +211,7 @@ public:
   bool Contains(const K &key)
   {
     if (!root)
-      false;
+      return false;
     return root->contains(key);
   }
 
@@ -132,7 +289,7 @@ public:
       throw std::runtime_error("Multiset is empty");
     return root->min();
   }
-  Multiset<K>() : root(nullptr) : size(0);
+  Multiset() : size (0),root(nullptr){};
 
 private:
   //
@@ -144,165 +301,12 @@ private:
 
   // Private constants
   // ...To be completed (if any)...
+
   size_t size;
   std::unique_ptr<Node<K>> root;
 
   // Private methods
   // ...To be completed (if any)...
-};
-
-template <typename K>
-class Node
-{
-public:
-  std::pair<K, size_t> find(const K &search)
-  {
-    if (search == key)
-      return std::pair<K, size_t>{key, count};
-    if (search > key)
-      return right->find(search);
-    if (search < key)
-      return left->find(search);
-  }
-  std::unique_ptr<Node<K>> remove(const K &search)
-  {
-    if (search < key)
-    {
-      if (left)
-      {
-        left = left->remove(search);
-      }
-    }
-    else if (search > key)
-    {
-      if (right)
-      {
-        right = right->remove(search);
-      }
-    }
-    else
-    {
-      if (count > 1)
-      {
-        count--;
-        return std::move(*this);
-      }
-      if (!left)
-        return std::move(right);
-      if (!right)
-        return std::move(left);
-
-      key = right->find(right->min).first;
-      count = right->find(right->min).second;
-      right = right->remove(key);
-    }
-    return std::move(*this);
-  }
-  const K &max()
-  {
-    if (this->right)
-    {
-      return right->max();
-    }
-    else
-    {
-      return key;
-    }
-  }
-  const K &min()
-  {
-    if (this->left)
-    {
-      return left->min();
-    }
-    else
-    {
-      return key;
-    }
-  }
-  void insert(const K &in)
-  {
-    if (key == in)
-    {
-      count++;
-      return;
-    }
-    if (key > in && left)
-    {
-      left->insert(in);
-    }
-    else if (key > in)
-    {
-      left = std::unique_ptr<Node>(new Node(search));
-      return;
-    }
-    if (key < in && right)
-    {
-      right->insert(in);
-    }
-    else if (key < in)
-    {
-      right = std::unique_ptr<Node>(new Node(search));
-      return;
-    }
-  }
-  const K &ceil(const K &search)
-  {
-    if (key > search)
-    {
-      if (right)
-      {
-        return min();
-      }
-      else
-      {
-        return key;
-      }
-    }
-    else
-    {
-      return right->ceil(search);
-    }
-  }
-  const K &floor(const K &search)
-  {
-    if (key < search)
-    {
-      if (left)
-      {
-        return min();
-      }
-      else
-      {
-        return key;
-      }
-    }
-    else
-    {
-      return right->ceil(search);
-    }
-  }
-
-  bool contains(const K &search)
-  {
-    if (key == search)
-      return true;
-    if (key > search && left)
-      return left->contains(search);
-    if (key < search && right)
-      return right->contains(search);
-    return false;
-  }
-  const K &getkey { return key; }
-
-  // constructor that immedeately adds the key to reduce the amount of insertion later on.
-  Node(const K &new_key) : key(new_key) : left(nullptr) : right(nullptr) : count(1);
-
-private:
-  K key;
-  std::unique_ptr<Node<K>> left;
-  std::unique_ptr<Node<K>> right;
-  size_t count;
 };
 
 //
