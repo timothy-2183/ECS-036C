@@ -23,7 +23,7 @@ public:
       return right->find(search);
     if (search < key && left)
       return left->find(search);
-    return std::pair<K, size_t>{NULL, NULL};
+    return std::pair<K, size_t>{static_cast<K>(NULL), 0};
   }
   std::unique_ptr<Node<K>> remove(const K &search)
   {
@@ -110,39 +110,51 @@ public:
   }
   const K &ceil(const K &search)
   {
-    if (key > search)
+    if (key == search)
+      return key;
+    
+    if (key < search)
     {
       if (right)
+        return right->ceil(search);
+      throw std::runtime_error("Ceil does not exist");
+    }
+    if (left)
+    {
+      try
       {
-        return min();
+        return left->ceil(search);
       }
-      else
+      catch (...)
       {
         return key;
       }
     }
-    else
-    {
-      return right->ceil(search);
-    }
+    return key;
   }
   const K &floor(const K &search)
   {
-    if (key < search)
+    if (key == search)
+      return key;
+    
+    if (key > search)
     {
       if (left)
+        return left->floor(search);
+      throw std::runtime_error("Floor does not exist");
+    }
+    if (right)
+    {
+      try
       {
-        return min();
+        return right->floor(search);
       }
-      else
+      catch (...)
       {
         return key;
       }
     }
-    else
-    {
-      return right->ceil(search);
-    }
+    return key;
   }
 
   bool contains(const K &search)
@@ -165,7 +177,6 @@ private:
   std::unique_ptr<Node<K>> right;
   size_t count;
 };
-
 template <typename K>
 class Multiset
 {
@@ -239,38 +250,17 @@ public:
   {
     if (!root)
       throw std::runtime_error("Multiset is empty");
-    if (root->contains(key))
-    {
-      return key;
-    }
-    else if (key < root->min())
-    {
-      throw std::runtime_error("All numbers in the multiset is greater than the Floor.");
-    }
-    else
-    {
-      return root->floor(key);
-    }
+    if (key < root->min()) throw std::runtime_error("All numbers in the multiset is greater than the Floor.");
+    return root->floor(key);
   }
 
   // Return least key greater than or equal to @key --O(log N) on average
   //  Throws exception if multiset is empty or no ceil exists for key
   const K &Ceil(const K &key)
   {
-    if (!root)
-      throw std::runtime_error("Multiset is empty");
-    if (root->contains(key))
-    {
-      return key;
-    }
-    else if (key > root->max())
-    {
-      throw std::runtime_error("All numbers in the multiset is lesser than the ceil");
-    }
-    else
-    {
-      return root->ceil(key);
-    }
+    if (!root) throw std::runtime_error("Multiset is empty");
+    else if (key > root->max())throw std::runtime_error("All numbers in the multiset is lesser than the ceil");
+    return root->ceil(key);
   }
 
   // Return max key in multiset --O(log N) on average

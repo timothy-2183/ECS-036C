@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
         } else {
             for (int i = factors.Min(); i <= factors.Max(); i++) {
                 if (factors.Contains(i)) {
-                    std::cout << i << " (x" << factors.Count(i) << "),";
+                    std::cout << i << " (x" << factors.Count(i) << "), ";
                 }
             }
             std::cout << std::endl;
@@ -111,10 +111,13 @@ int main(int argc, char* argv[]) {
         bool greater = near_arg[0] == '+';
         bool lesser = near_arg[0] == '-';
         int target;
+        int u_bound = factors.Max();
+        int l_bound = 2;
+        
 
         if ((greater || lesser) && parse_int(near_arg.substr(1), target)) {
             if (!factors.Empty()) {
-                int result = greater ? factors.Ceil(target) : factors.Floor(target);
+                int result = greater ? factors.Ceil(target+1) : factors.Floor(target-1);
                 std::cout << result << " (x" << factors.Count(result) << ")" << std::endl;
             } else {
                 std::cout << "No match" << std::endl;
