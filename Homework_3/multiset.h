@@ -110,9 +110,10 @@ public:
   }
   const K &ceil(const K &search)
   {
+    /*
     if (key == search)
       return key;
-    
+    */
     if (key < search)
     {
       if (right)
@@ -134,9 +135,10 @@ public:
   }
   const K &floor(const K &search)
   {
+    /*
     if (key == search)
       return key;
-    
+    */
     if (key > search)
     {
       if (left)

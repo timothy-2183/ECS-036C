@@ -111,8 +111,6 @@ int main(int argc, char* argv[]) {
         bool greater = near_arg[0] == '+';
         bool lesser = near_arg[0] == '-';
         int target;
-        int u_bound = factors.Max();
-        int l_bound = 2;
         
 
         if ((greater || lesser) && parse_int(near_arg.substr(1), target)) {
