@@ -9,28 +9,31 @@
 #include <utility>
 
 template <typename K>
-class Multiset {
- public:
+class Multiset
+{
+public:
   //
   // Public API
   //
 
   // * Capacity
   // Returns number of items in multiset --O(1)
-  size_t Size(){return size;}
+  size_t Size() { return size; }
 
   // Returns true if multiset is empty --O(1)
-  bool Empty() {return (!root)}
+  bool Empty() { return (!root) }
 
   // * Modifiers
   // Inserts an item corresponding to @key in multiset --O(log N) on average
-  void Insert(const K &key){
+  void Insert(const K &key)
+  {
     if (root)
     {
       root->insert(key);
       size++;
     }
-    else{
+    else
+    {
       root = std::unique_ptr<Node<K>>(new Node(key));
       size = 1;
     }
@@ -38,103 +41,99 @@ class Multiset {
 
   // Removes an item corresponding to @key from multiset --O(log N) on average
   //  Throws exception if key doesn't exist
-  void Remove(const K &key){
-    if (root->getkey()==key)
-    {
-      
-    }
-    
+  void Remove(const K &key)
+  {
+    if (!root)
+      throw std::runtime_error("Key not found");
+    root = root->remove(key);
+    size--;
   }
 
   // * Lookup
   // Return whether @key is found in multiset --O(log N) on average
-  bool Contains(const K& key){
-    if (root)
-    {
-      root.contains(key);
-    }
-    else{
-      return false;
-    }
+  bool Contains(const K &key)
+  {
+    if (!root)
+      false;
+    return root->contains(key);
   }
 
   // Returns number of items matching @key in multiset --O(log N) on average
   //  Throws exception if key doesn't exist
-  size_t Count(const K& key){
-    if (root)
+  size_t Count(const K &key)
+  {
+    if (!root)
+      throw std::runtime_error("Key not found");
+    if (root->contains(key))
     {
-      
+      std::pair<K, size_t> my_pair = root->find(key);
+      return my_pair.second;
     }
-    else{
-      throw std::runtime_error("Multiset is empty");
+    else
+    {
+      throw std::runtime_error("Key does not exist");
     }
   }
 
   // Return greatest key less than or equal to @key --O(log N) on average
   //  Throws exception if multiset is empty or no floor exists for key
-  const K& Floor(const K &key){
-    if (root)
-    {
-      if (root->contains(key))
-      {
-        return key;
-      }
-      else if(key < root->min()){
-        throw std::runtime_error("All numbers in the multiset is greater than the Floor.")
-      }
-      else{
-        return root->floor(key);
-      }
-    }
-    else{
+  const K &Floor(const K &key)
+  {
+    if (!root)
       throw std::runtime_error("Multiset is empty");
+    if (root->contains(key))
+    {
+      return key;
+    }
+    else if (key < root->min())
+    {
+      throw std::runtime_error("All numbers in the multiset is greater than the Floor.");
+    }
+    else
+    {
+      return root->floor(key);
     }
   }
 
   // Return least key greater than or equal to @key --O(log N) on average
   //  Throws exception if multiset is empty or no ceil exists for key
-  const K& Ceil(const K &key){
-    if (root)
-    {
-      if (root->contains(key))
-      {
-        return key;
-      }
-      else if(key > root->max()){
-        throw std::runtime_error("All numbers in the multiset is lesser than the ceil");
-      }
-      else{
-        return root->ceil(key);
-      }
-    }
-    else{
+  const K &Ceil(const K &key)
+  {
+    if (!root)
       throw std::runtime_error("Multiset is empty");
+    if (root->contains(key))
+    {
+      return key;
+    }
+    else if (key > root->max())
+    {
+      throw std::runtime_error("All numbers in the multiset is lesser than the ceil");
+    }
+    else
+    {
+      return root->ceil(key);
     }
   }
-  
 
   // Return max key in multiset --O(log N) on average
   //  Throws exception if multiset is empty
-  const K& Max(){
-    if(root){
-      root->min
-    }
-    else {
+  const K &Max()
+  {
+    if (!root)
       throw std::runtime_error("Multiset is empty");
-    }
+    return root->max();
   }
 
   // Return min key in multiset --O(log N) on average
   //  Throws exception if multiset is empty
-  const K& Min(){
-    if(root){
-      return root->min();
-    }
-    else {
-     throw std::runtime_error("Multiset is empty");
-    }
+  const K &Min()
+  {
+    if (!root)
+      throw std::runtime_error("Multiset is empty");
+    return root->min();
   }
- private:
+
+private:
   //
   // @@@ The class's internal members below can be modified @@@
   //
@@ -152,93 +151,156 @@ class Multiset {
 };
 
 template <typename K>
-class Node{
-  public:
-  const &K max(){
+class Node
+{
+public:
+  std::unique_ptr<Node<K>> remove(const K &search)
+  {
+    if (search < key)
+    {
+      if (left)
+      {
+        left = left->remove(search);
+      }
+    }
+    else if (search > key)
+    {
+      if (right)
+      {
+        right = right->remove(search);
+      }
+    }
+    else
+    {
+      if (count > 1)
+      {
+        count--;
+        return std::move(*this);
+      }
+      if (!left)
+        return std::move(right);
+      if (!right)
+        return std::move(left);
+
+      key = right->min();
+      count = right->countOccurrences(key);
+      right = right->remove(key);
+    }
+    return std::move(*this);
+  }
+  std::pair<K, size_t> find(const K &search)
+  {
+    if (search == key)
+      return std::pair<K, size_t>{key, count};
+    if (search > key)
+      return right->find(search);
+    if (search < key)
+      return left->find(search);
+  }
+  const K &max()
+  {
     if (this->right)
     {
       return right->max();
     }
-    else{
+    else
+    {
       return key;
     }
   }
-  const &K min(){
+  const K &min()
+  {
     if (this->left)
     {
       return left->min();
     }
-    else{
+    else
+    {
       return key;
     }
   }
-  void insert (const K &in){
-    if (key==in)
+  void insert(const K &in)
+  {
+    if (key == in)
     {
       count++;
       return;
     }
-    if (key > in && left) {
+    if (key > in && left)
+    {
       left->insert(in);
     }
-    else if (key > in){
+    else if (key > in)
+    {
       left = std::unique_ptr<Node>(new Node(search));
       return;
     }
-    if (key < in && right) {
+    if (key < in && right)
+    {
       right->insert(in);
     }
-    else if(key < in){
+    else if (key < in)
+    {
       right = std::unique_ptr<Node>(new Node(search));
       return;
     }
   }
-  const &K ceil(const &K search){
+  const K &ceil(const K &search)
+  {
     if (key > search)
     {
       if (right)
       {
         return min();
       }
-      else{
+      else
+      {
         return key;
       }
     }
-    else{
+    else
+    {
       return right->ceil(search);
     }
   }
-  const &K floor(const &K search){
+  const K &floor(const K &search)
+  {
     if (key < search)
     {
       if (left)
       {
         return min();
       }
-      else{
+      else
+      {
         return key;
       }
     }
-    else{
+    else
+    {
       return right->ceil(search);
     }
   }
-  
 
-  bool contains(const K& search){
-    if (key == search) return true;
-    if (key > search && left) return left->contains(search);
-    if (key < search && right) return right->contains(search);
+  bool contains(const K &search)
+  {
+    if (key == search)
+      return true;
+    if (key > search && left)
+      return left->contains(search);
+    if (key < search && right)
+      return right->contains(search);
     return false;
   }
-  const &K getkey{return key;}
+  const K &getkey { return key; }
 
   // constructor that immedeately adds the key to reduce the amount of insertion later on.
-  Node(const K& new_key):key(new_key):left(nullptr):right(nullptr):count(1){}
-  private:
+  Node(const K &new_key) : key(new_key) : left(nullptr) : right(nullptr) : count(1);
+
+private:
   K key;
   std::unique_ptr<Node<K>> left;
-  std::unique_ptr<Node<K>> right; 
+  std::unique_ptr<Node<K>> right;
   size_t count;
 };
 
@@ -248,4 +310,4 @@ class Node{
 
 // ...To be completed...
 
-#endif  // MULTISET_H_
+#endif // MULTISET_H_
