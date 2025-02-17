@@ -111,10 +111,11 @@ int main(int argc, char* argv[]) {
         bool greater = near_arg[0] == '+';
         bool lesser = near_arg[0] == '-';
         int target;
-        
+        int min = factors.Min();
+        int max = factors.Max();
 
         if ((greater || lesser) && parse_int(near_arg.substr(1), target)) {
-            if (!factors.Empty()) {
+            if (!factors.Empty() && target-1>min && target+1<max) {
                 int result = greater ? factors.Ceil(target+1) : factors.Floor(target-1);
                 std::cout << result << " (x" << factors.Count(result) << ")" << std::endl;
             } else {
