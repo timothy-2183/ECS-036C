@@ -38,8 +38,6 @@ Multiset<int> Prime_Multiset(const int n){
     auto my_set = Multiset<int>();
     auto primes_vector = sieve(n);
     int temp = 0;
-    int count = 0;
-    my_set.Insert(1);
     for (auto i :primes_vector)
     {
         temp = i;
@@ -49,6 +47,7 @@ Multiset<int> Prime_Multiset(const int n){
             temp = temp*i;
         }
     }
+    if (my_set.Contains(n)) my_set.Remove(n) ;
     return my_set;
 }
 
@@ -67,39 +66,41 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int number=0;
+    int number = 0;
     if (!parse_int(argv[1], number)) {
         std::cerr << "Invalid number" << std::endl;
         return 1;
     }
 
     Multiset<int> factors = Prime_Multiset(number);
-
     std::string command = argv[2];
 
     if (command == "all") {
         if (factors.Empty()) {
             std::cout << "No prime factors" << std::endl;
         } else {
+            bool first = true;
             for (int i = factors.Min(); i <= factors.Max(); i++) {
                 if (factors.Contains(i)) {
-                    std::cout << i << " (x" << factors.Count(i) << "), ";
+                    if (!first) std::cout << ", ";
+                    std::cout << i << " (x" << factors.Count(i) << ")";
+                    first = false;
                 }
             }
             std::cout << std::endl;
         }
     } 
     else if (command == "min") {
-        try {
+        if (!factors.Empty()) {
             std::cout << factors.Min() << " (x" << factors.Count(factors.Min()) << ")" << std::endl;
-        } catch (const std::exception&) {
+        } else {
             std::cout << "No prime factors" << std::endl;
         }
     } 
     else if (command == "max") {
-        try {
+        if (!factors.Empty()) {
             std::cout << factors.Max() << " (x" << factors.Count(factors.Max()) << ")" << std::endl;
-        } catch (const std::exception&) {
+        } else {
             std::cout << "No prime factors" << std::endl;
         }
     } 
@@ -115,19 +116,21 @@ int main(int argc, char* argv[]) {
         int target;
 
         if ((greater || lesser) && parse_int(near_arg.substr(1), target)) {
-            try {
+            if (!factors.Empty()) {
                 int result = greater ? factors.Ceil(target) : factors.Floor(target);
                 std::cout << result << " (x" << factors.Count(result) << ")" << std::endl;
-            } catch (const std::exception&) {
+            } else {
                 std::cout << "No match" << std::endl;
             }
-        } else if (parse_int(near_arg, target)) {
-            try {
+        } 
+        else if (parse_int(near_arg, target)) {
+            if (!factors.Empty() && factors.Contains(target)) {
                 std::cout << target << " (x" << factors.Count(target) << ")" << std::endl;
-            } catch (const std::exception&) {
+            } else {
                 std::cout << "No match" << std::endl;
             }
-        } else {
+        } 
+        else {
             std::cerr << "Invalid prime" << std::endl;
             return 1;
         }
@@ -137,6 +140,4 @@ int main(int argc, char* argv[]) {
         std::cerr << "Possible commands are: all|min|max|near" << std::endl;
         return 1;
     }
-
-    return 0;
 }

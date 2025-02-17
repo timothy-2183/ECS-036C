@@ -23,7 +23,7 @@ public:
       return right->find(search);
     if (search < key && left)
       return left->find(search);
-    return std::pair<K,size_t>{NULL,NULL};
+    return std::pair<K, size_t>{NULL, NULL};
   }
   std::unique_ptr<Node<K>> remove(const K &search)
   {
@@ -46,19 +46,20 @@ public:
       if (count > 1)
       {
         count--;
-        return this;
+        return std::unique_ptr<Node<K>>(this);;
       }
       if (!left)
-        return right;
+        return std::move(right);
       if (!right)
-        return left;
+        return std::move(left);
 
-      key = right->find(right->min()).first;
+      key = right->min();
       count = right->find(right->min()).second;
       right = right->remove(key);
     }
-    return this;
+    return std::unique_ptr<Node<K>>(this);
   }
+
   const K &max()
   {
     if (this->right)
@@ -156,7 +157,7 @@ public:
   }
 
   // constructor that immedeately adds the key to reduce the amount of insertion later on.
-  Node(const K &new_key) : key(new_key) , left(nullptr) , right(nullptr) , count(1){};
+  Node(const K &new_key) : key(new_key), left(nullptr), right(nullptr), count(1) {};
 
 private:
   K key;
@@ -175,10 +176,10 @@ public:
 
   // * Capacity
   // Returns number of items in multiset --O(1)
-  size_t Size() {return size;}
+  size_t Size() { return size; }
 
   // Returns true if multiset is empty --O(1)
-  bool Empty() {return !root;}
+  bool Empty() { return !root; }
 
   // * Modifiers
   // Inserts an item corresponding to @key in multiset --O(log N) on average
@@ -191,7 +192,7 @@ public:
     }
     else
     {
-      root = std::unique_ptr<Node<K>>(new Node(key));
+      root = std::unique_ptr<Node<K>>(new Node<K>(key));
       size = 1;
     }
   }
@@ -289,7 +290,7 @@ public:
       throw std::runtime_error("Multiset is empty");
     return root->min();
   }
-  Multiset() : size (0),root(nullptr){};
+  Multiset() : size(0), root(nullptr) {};
 
 private:
   //
